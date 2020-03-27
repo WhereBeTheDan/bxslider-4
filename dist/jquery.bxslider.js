@@ -368,7 +368,7 @@
           // add the current slide to the children
           children = slider.children.eq(currentIndex);
           // cycle through the remaining "showing" slides
-          for (i = 1; i <= slider.settings.maxSlides - 1; i++) {
+          for (var i = 1; i <= slider.settings.maxSlides - 1; i++) {
             // if looped back to the start
             if (currentIndex + i >= slider.children.length) {
               children = children.add(slider.children.eq(i - 1));
@@ -1106,7 +1106,6 @@
       if (e.type !== 'touchstart' && e.button !== 0) {
         return;
       }
-      e.preventDefault();
       //disable slider controls while user is interacting with slides to avoid slider freeze that happens on touch devices when a slide swipe happens immediately after interacting with slider controls
       slider.controls.el.addClass('disabled');
 
@@ -1168,6 +1167,12 @@
       }
     };
 
+    var maybePreventDefault = function(e) {
+      if (e.hasOwnProperty('cancelable') && e.cancelable) {
+        e.preventDefault();
+      }
+    };
+
     /**
      * Event handler for "touchmove"
      *
@@ -1187,13 +1192,13 @@
 
       // x axis swipe
       if ((xMovement * 3) > yMovement && slider.settings.preventDefaultSwipeX) {
-        e.preventDefault();
+        maybePreventDefault(e);
       // y axis swipe
       } else if ((yMovement * 3) > xMovement && slider.settings.preventDefaultSwipeY) {
-        e.preventDefault();
+        maybePreventDefault(e);
       }
       if (e.type !== 'touchmove') {
-        e.preventDefault();
+        maybePreventDefault(e);
       }
 
       if (slider.settings.mode !== 'fade' && slider.settings.oneToOneTouch) {
